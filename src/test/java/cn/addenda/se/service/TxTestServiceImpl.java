@@ -24,7 +24,7 @@ public class TxTestServiceImpl implements TxTestService {
     private String name;
 
     @Override
-    @ServiceResultConvertible(errorToSuccess = true, errorToFailed = false, exceptionClass = Exception.class)
+    @ServiceResultConvertible(errorTo = ServiceResultConvertible.ERROR_TO_SUCCESS, exceptionClass = Exception.class)
     @Transactional(rollbackFor = Exception.class)
     public ServiceResult<Boolean> insert(TxTest txTest) {
         boolean success = txTestMapper.insert(txTest) > 0;
