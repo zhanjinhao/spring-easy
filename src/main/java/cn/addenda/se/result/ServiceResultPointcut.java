@@ -19,10 +19,12 @@ public class ServiceResultPointcut extends StaticMethodMatcherPointcut {
         if (annotation != null) {
             Class<?> returnType = actualMethod.getReturnType();
             if (ServiceResult.class.isAssignableFrom(returnType)) {
-                if (annotation.errorToSuccess() ^ annotation.errorToFailed()) {
+                if (ServiceResultConvertible.ERROR_TO_FAILED.equals(annotation.errorTo())) {
+                    return true;
+                } else if (ServiceResultConvertible.ERROR_TO_SUCCESS.equals(annotation.errorTo())) {
                     return true;
                 } else {
-                    throw new ResultException("errorToSuccess ^ errorToFailed 需要为 true");
+                    throw new ResultException("only support ServiceResultConvertible.ERROR_TO_FAILED and ServiceResultConvertible.ERROR_TO_SUCCESS.");
                 }
             } else {
                 throw new ResultException("标注 ServiceResultConvertible 注解的方法的返回值需要为 cn.addenda.se.result.ServiceResult.");
