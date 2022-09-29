@@ -5,7 +5,7 @@
 
 多数据源是Spring提供的一个功能，这里进行了一下封装：
 
-参考：cn.addenda.se.multidatasource.MultiDataSourceConvertibleTest。
+参考：cn.addenda.se.multidatasource.MultiDataSourceTest。
 
 
 ## propertyRefresh
@@ -33,6 +33,11 @@ Spring外部化配置是不能被@Value注解刷新的。此模块为了刷新@V
 Spring提供的注解 @Transactional 能很好地帮助我们解决方法级别的事务，但是对于代码级别的事务仍然需要复杂的代码，
 事务模块提供了简单易用的手动事务，完全兼容@Transactional。
 
+
+## ParamResLog
+
+和其他系统对接业务流程时，需要记录下来其他系统传过来的参数和返回的结果，便于出问题时后续复盘。
+通过注解 @ParamResLog 对方法进行环绕增强。记录下来参数，未异常时的结果或异常时的异常栈。
 
 # todo
 DistributedLock Aspect.

@@ -1,4 +1,4 @@
-package cn.addenda.se.multidatasource;
+package cn.addenda.se.paramreslog;
 
 import cn.addenda.se.pojo.TxTest;
 import cn.addenda.se.service.TxTestService;
@@ -9,12 +9,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @Author ISJINHAO
  * @Date 2022/2/26 23:00
  */
-public class MultiDataSourceConvertibleTest {
+public class ParamResLogTest {
 
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(MultiDataSourceDeclareConfiguration.class, TxTestServiceImpl.class);
+        context.register(ParamResLogConfiguration.class, TxTestServiceImpl.class);
 
         context.refresh();
 
