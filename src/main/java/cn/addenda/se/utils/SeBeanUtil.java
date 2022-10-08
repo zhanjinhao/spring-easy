@@ -85,4 +85,9 @@ public class SeBeanUtil {
         }
     }
 
+    public static <T> T copyProperties(Object source, T target) {
+        BeanUtils.copyProperties(source, target);
+        return target;
+    }
+
 }
