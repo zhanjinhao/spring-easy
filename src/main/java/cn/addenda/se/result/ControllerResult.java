@@ -1,6 +1,7 @@
 package cn.addenda.se.result;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * @Author ISJINHAO
@@ -18,7 +19,7 @@ public class ControllerResult<T> implements Serializable {
 
     private String version;
 
-    private long date = System.currentTimeMillis();
+    private long ts = System.currentTimeMillis();
 
     private T result;
 
@@ -30,10 +31,18 @@ public class ControllerResult<T> implements Serializable {
         this.result = result;
     }
 
-    public ControllerResult(ServiceResult<T> serviceResult) {
-        this.success = serviceResult.getServiceResultStatus().equals(ServiceResultStatus.SUCCESS);
-        this.result = serviceResult.getResult();
-        this.errorMsg = serviceResult.getErrorMsg();
+    public static <R> ControllerResult<R> create(ServiceResult<R> serviceResult) {
+        return create(serviceResult, a -> a);
+    }
+
+    public static <R, T> ControllerResult<R> create(ServiceResult<T> serviceResult, Function<T, R> function) {
+        ControllerResult<R> controllerResult = new ControllerResult<>();
+        controllerResult.setSuccess(ServiceResult.STATUS_SUCCESS.equals(serviceResult.getStatus()));
+        controllerResult.setResult(function.apply(serviceResult.getResult()));
+        if (!controllerResult.isSuccess()) {
+            controllerResult.setErrorMsg(serviceResult.getErrorMsg());
+        }
+        return controllerResult;
     }
 
     public String getRequestId() {
@@ -76,12 +85,12 @@ public class ControllerResult<T> implements Serializable {
         this.version = version;
     }
 
-    public long getDate() {
-        return date;
+    public long getTs() {
+        return ts;
     }
 
-    public void setDate(long date) {
-        this.date = date;
+    public void setTs(long ts) {
+        this.ts = ts;
     }
 
     public T getResult() {

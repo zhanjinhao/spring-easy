@@ -26,28 +26,42 @@ public class ServiceResultMethodInterceptor implements MethodInterceptor {
         }
 
         long startTime = System.currentTimeMillis();
-        Object result;
+        ServiceResult<?> result;
         try {
-            result = invocation.proceed();
+            result = (ServiceResult<?>) invocation.proceed();
         } catch (Throwable throwable) {
-            // 不可以被转换的异常
-            if (!serviceResultConvertible.exceptionClass().isAssignableFrom(throwable.getClass())) {
+            // 不可被转换的异常
+            if (!serviceResultConvertible.excClass().isAssignableFrom(throwable.getClass())) {
+                // 不可被转换的异常，DEBUG模式输出异常。
+                if (logger.isDebugEnabled()) {
+                    logger.debug("", throwable);
+                }
                 throw throwable;
             }
-            ServiceResult<?> objectServiceResult;
-            // 可以被转换的异常
-            if (ServiceResultConvertible.ERROR_TO_FAILED.equals(serviceResultConvertible.errorTo())) {
-                objectServiceResult = new ServiceResult<>(ServiceResultStatus.FAILED, null);
-                objectServiceResult.setErrorMsg(serviceResultConvertible.errorMsg());
-            } else if (ServiceResultConvertible.ERROR_TO_SUCCESS.equals(serviceResultConvertible.errorTo())) {
-                objectServiceResult = new ServiceResult<>(ServiceResultStatus.SUCCESS, null);
-            } else {
-                throw new ResultException("only support ServiceResultConvertible.ERROR_TO_FAILED and ServiceResultConvertible.ERROR_TO_SUCCESS.");
+
+            // 可被转换的异常
+            ServiceException serviceException = (ServiceException) throwable;
+            if (logger.isDebugEnabled()) {
+                // 可被转换的异常，DEBUG模式输出异常。
+                logger.debug(serviceException.getExcMsg(), throwable);
             }
-            objectServiceResult.setStartTm(startTime);
-            objectServiceResult.setEndTm(System.currentTimeMillis());
-            logger.error("", throwable);
-            return objectServiceResult;
+
+            if (ServiceResultConvertible.EXC_TO_ERROR.equals(serviceResultConvertible.excTo())) {
+                result = ServiceResult.error(null, serviceException.getExcMsg());
+                if (logger.isErrorEnabled()) {
+                    logger.error(serviceException.getExcMsg(), throwable);
+                }
+            } else if (ServiceResultConvertible.EXC_TO_SUCCESS.equals(serviceResultConvertible.excTo())) {
+                result = ServiceResult.success(null);
+            } else {
+                throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS. ");
+            }
+        }
+
+        // 在未发生异常时，可能返回 null
+        if (result != null) {
+            result.setStartTs(startTime);
+            result.setEndTs(System.currentTimeMillis());
         }
         return result;
     }

@@ -11,14 +11,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ServiceResultConvertible {
 
-    String ERROR_TO_SUCCESS = "errorToSuccess";
-    String ERROR_TO_FAILED = "errorToFailed";
+    String EXC_TO_SUCCESS = "excToSuccess";
+    String EXC_TO_ERROR = "excToError";
 
     // 哪些异常能进行转换
-    Class<? extends Throwable> exceptionClass() default RuntimeException.class;
+    Class<? extends Throwable> excClass() default ServiceException.class;
 
-    String errorMsg() default "error occurred!";
+    String excMsg() default "exception occurred!";
 
-    String errorTo() default ERROR_TO_FAILED;
+    String excTo() default EXC_TO_ERROR;
 
 }

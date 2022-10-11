@@ -12,26 +12,44 @@ import java.time.format.DateTimeFormatter;
  */
 public class ServiceResult<T> implements Serializable {
 
-    // 调用方需要判断这个值，看看下一步怎么处理
-    private ServiceResultStatus serviceResultStatus = ServiceResultStatus.SUCCESS;
+    /**
+     * 成功
+     */
+    public static final String STATUS_SUCCESS = "SUCCESS";
+
+    /**
+     * 发生错误，异常被处理
+     */
+    public static final String STATUS_ERROR = "ERROR";
+
+    /**
+     * 状态ErrorMsg定，需要调用方判断ErrorMsg。
+     * 这个状态是调用方代码设置的，不会根据异常在AOP中自动赋值。
+     */
+    public static final String STATUS_DISPATCH = "DISPATCH";
+
+    /**
+     * 调用方需要判断这个值，看看下一步怎么处理
+     */
+    private String status = STATUS_SUCCESS;
+
+    private long startTs = System.currentTimeMillis();
+    private long endTs = System.currentTimeMillis();
 
     private String errorMsg;
 
-    private long startTm = System.currentTimeMillis();
-    private long endTm = System.currentTimeMillis();
-
     private T result;
 
-    public ServiceResult(ServiceResultStatus serviceResultStatus, T result) {
-        this.serviceResultStatus = serviceResultStatus;
-        this.result = result;
+    public ServiceResult() {
     }
 
     public ServiceResult(T result) {
         this.result = result;
     }
 
-    public ServiceResult() {
+    public ServiceResult(String status, T result) {
+        this.status = status;
+        this.result = result;
     }
 
     public String getErrorMsg() {
@@ -50,37 +68,37 @@ public class ServiceResult<T> implements Serializable {
         this.result = result;
     }
 
-    public ServiceResultStatus getServiceResultStatus() {
-        return serviceResultStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setServiceResultStatus(ServiceResultStatus serviceResultStatus) {
-        this.serviceResultStatus = serviceResultStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setStartTm(long startTm) {
-        this.startTm = startTm;
+    public void setStartTs(long startTs) {
+        this.startTs = startTs;
     }
 
-    public long getStartTm() {
-        return startTm;
+    public long getStartTs() {
+        return startTs;
     }
 
-    public void setEndTm(long endTm) {
-        this.endTm = endTm;
+    public void setEndTs(long endTs) {
+        this.endTs = endTs;
     }
 
-    public long getEndTm() {
-        return endTm;
+    public long getEndTs() {
+        return endTs;
     }
 
     @Override
     public String toString() {
         return "ServiceResult{" +
-                "serviceResultStatus=" + serviceResultStatus +
+                "status=" + status +
                 ", errorMsg='" + errorMsg + '\'' +
-                ", startTm=" + covertTmToStr(startTm) +
-                ", endTm=" + covertTmToStr(endTm) +
+                ", startTs=" + covertTmToStr(startTs) +
+                ", endTs=" + covertTmToStr(endTs) +
                 ", result=" + result +
                 '}';
     }
@@ -90,6 +108,16 @@ public class ServiceResult<T> implements Serializable {
     private String covertTmToStr(long tm) {
         LocalDateTime localDateTime = BEDateUtil.timestampToLocalDateTime(tm);
         return formatter.format(localDateTime);
+    }
+
+    public static <T> ServiceResult<T> success(T result) {
+        return new ServiceResult<>(STATUS_SUCCESS, result);
+    }
+
+    public static <T> ServiceResult<T> error(T result, String errorMsg) {
+        ServiceResult<T> tServiceResult = new ServiceResult<>(STATUS_ERROR, result);
+        tServiceResult.setErrorMsg(errorMsg);
+        return tServiceResult;
     }
 
 }

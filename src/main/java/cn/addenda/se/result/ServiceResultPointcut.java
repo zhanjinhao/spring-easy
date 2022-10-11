@@ -16,22 +16,25 @@ public class ServiceResultPointcut extends StaticMethodMatcherPointcut {
     public boolean matches(Method method, Class<?> targetClass) {
         Method actualMethod = AopUtils.getMostSpecificMethod(method, targetClass);
         ServiceResultConvertible annotation = AnnotationUtils.findAnnotation(actualMethod, ServiceResultConvertible.class);
-        if (annotation != null) {
-            Class<?> returnType = actualMethod.getReturnType();
-            if (ServiceResult.class.isAssignableFrom(returnType)) {
-                if (ServiceResultConvertible.ERROR_TO_FAILED.equals(annotation.errorTo())) {
-                    return true;
-                } else if (ServiceResultConvertible.ERROR_TO_SUCCESS.equals(annotation.errorTo())) {
-                    return true;
-                } else {
-                    throw new ResultException("only support ServiceResultConvertible.ERROR_TO_FAILED and ServiceResultConvertible.ERROR_TO_SUCCESS.");
-                }
-            } else {
-                throw new ResultException("标注 ServiceResultConvertible 注解的方法的返回值需要为 cn.addenda.se.result.ServiceResult.");
-            }
+        if (annotation == null) {
+            return false;
         }
-
-        return false;
+        Class<?> returnType = actualMethod.getReturnType();
+        // 方法的返回值必须是ServiceResult
+        if (ServiceResult.class.isAssignableFrom(returnType)) {
+            // 只支持 EXC_TO_ERROR 和 EXC_TO_SUCCESS
+            if (!ServiceResultConvertible.EXC_TO_ERROR.equals(annotation.excTo())
+                    && !ServiceResultConvertible.EXC_TO_SUCCESS.equals(annotation.excTo())) {
+                throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS. ");
+            }
+            Class<? extends Throwable> exceptionClass = annotation.excClass();
+            if (!ServiceException.class.isAssignableFrom(exceptionClass)) {
+                throw new ServiceResultException("ServiceResultConvertible.excClass 需要为 cn.addenda.se.result.ServiceException 的子类。");
+            }
+            return true;
+        } else {
+            throw new ServiceResultException("标注 ServiceResultConvertible 注解的方法的返回值需要为 cn.addenda.se.result.ServiceResult. ");
+        }
     }
 
 }
