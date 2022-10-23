@@ -22,10 +22,11 @@ public class ServiceResultPointcut extends StaticMethodMatcherPointcut {
         Class<?> returnType = actualMethod.getReturnType();
         // 方法的返回值必须是ServiceResult
         if (ServiceResult.class.isAssignableFrom(returnType)) {
-            // 只支持 EXC_TO_ERROR 和 EXC_TO_SUCCESS
-            if (!ServiceResultConvertible.EXC_TO_ERROR.equals(annotation.excTo())
-                    && !ServiceResultConvertible.EXC_TO_SUCCESS.equals(annotation.excTo())) {
-                throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS. ");
+            String excTo = annotation.excTo();
+            if (!ServiceResultConvertible.EXC_TO_ERROR.equals(excTo)
+                    && !ServiceResultConvertible.EXC_TO_SUCCESS.equals(excTo)
+                    && !ServiceResultConvertible.EXC_TO_DISPATCH.equals(excTo)) {
+                throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS and EXC_TO_DISPATCH. ");
             }
             Class<? extends Throwable> exceptionClass = annotation.excClass();
             if (!ServiceException.class.isAssignableFrom(exceptionClass)) {

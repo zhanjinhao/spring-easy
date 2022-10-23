@@ -40,19 +40,17 @@ public class ServiceResultMethodInterceptor implements MethodInterceptor {
             }
 
             // 可被转换的异常
-            ServiceException serviceException = (ServiceException) throwable;
+            ServiceException se = (ServiceException) throwable;
             if (logger.isDebugEnabled()) {
                 // 可被转换的异常，DEBUG模式输出异常。
-                logger.debug(serviceException.getExcMsg(), throwable);
+                logger.debug(se.getMessage(), throwable);
             }
-
-            if (ServiceResultConvertible.EXC_TO_ERROR.equals(serviceResultConvertible.excTo())) {
-                result = ServiceResult.error(null, serviceException.getExcMsg());
-                if (logger.isErrorEnabled()) {
-                    logger.error(serviceException.getExcMsg(), throwable);
-                }
-            } else if (ServiceResultConvertible.EXC_TO_SUCCESS.equals(serviceResultConvertible.excTo())) {
+            if (ServiceResultConvertible.EXC_TO_SUCCESS.equals(serviceResultConvertible.excTo())) {
                 result = ServiceResult.success(null);
+            } else if (ServiceResultConvertible.EXC_TO_DISPATCH.equals(serviceResultConvertible.excTo())) {
+                result = ServiceResult.dispatch(null, se.getFailedCode(), se.getMessage(), se);
+            } else if (ServiceResultConvertible.EXC_TO_ERROR.equals(serviceResultConvertible.excTo())) {
+                result = ServiceResult.failed(null, se.getFailedCode(), se.getMessage(), se);
             } else {
                 throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS. ");
             }

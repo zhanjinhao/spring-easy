@@ -13,51 +13,32 @@ import java.time.format.DateTimeFormatter;
 public class ServiceResult<T> implements Serializable {
 
     /**
-     * 成功
-     */
-    public static final String STATUS_SUCCESS = "SUCCESS";
-
-    /**
-     * 发生错误，异常被处理
-     */
-    public static final String STATUS_ERROR = "ERROR";
-
-    /**
-     * 状态ErrorMsg定，需要调用方判断ErrorMsg。
-     * 这个状态是调用方代码设置的，不会根据异常在AOP中自动赋值。
-     */
-    public static final String STATUS_DISPATCH = "DISPATCH";
-
-    /**
      * 调用方需要判断这个值，看看下一步怎么处理
      */
-    private String status = STATUS_SUCCESS;
+    private String status;
 
     private long startTs = System.currentTimeMillis();
     private long endTs = System.currentTimeMillis();
 
-    private String errorMsg;
+    private String failedMsg;
+
+    private Integer failedCode;
+
+    private Throwable throwable;
 
     private T result;
-
-    public ServiceResult() {
-    }
-
-    public ServiceResult(T result) {
-        this.result = result;
-    }
 
     public ServiceResult(String status, T result) {
         this.status = status;
         this.result = result;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public String getFailedMsg() {
+        return failedMsg;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setFailedMsg(String failedMsg) {
+        this.failedMsg = failedMsg;
     }
 
     public T getResult() {
@@ -92,13 +73,31 @@ public class ServiceResult<T> implements Serializable {
         return endTs;
     }
 
+    public Integer getFailedCode() {
+        return failedCode;
+    }
+
+    public void setFailedCode(Integer failedCode) {
+        this.failedCode = failedCode;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
+    }
+
     @Override
     public String toString() {
         return "ServiceResult{" +
-                "status=" + status +
-                ", errorMsg='" + errorMsg + '\'' +
-                ", startTs=" + covertTmToStr(startTs) +
-                ", endTs=" + covertTmToStr(endTs) +
+                "status='" + status + '\'' +
+                ", startTs='" + covertTmToStr(startTs) + "'" +
+                ", endTs='" + covertTmToStr(endTs) + "'" +
+                ", failedMsg='" + failedMsg + '\'' +
+                ", failedCode=" + failedCode +
+                ", throwable=" + throwable +
                 ", result=" + result +
                 '}';
     }
@@ -111,12 +110,36 @@ public class ServiceResult<T> implements Serializable {
     }
 
     public static <T> ServiceResult<T> success(T result) {
-        return new ServiceResult<>(STATUS_SUCCESS, result);
+        return new ServiceResult<>(StatusConst.SUCCESS, result);
     }
 
-    public static <T> ServiceResult<T> error(T result, String errorMsg) {
-        ServiceResult<T> tServiceResult = new ServiceResult<>(STATUS_ERROR, result);
-        tServiceResult.setErrorMsg(errorMsg);
+    public static <T> ServiceResult<T> dispatch(T result, int failedCode, String failedMsg, Throwable throwable) {
+        ServiceResult<T> tServiceResult = new ServiceResult<>(StatusConst.DISPATCH, result);
+        tServiceResult.setFailedCode(failedCode);
+        tServiceResult.setFailedMsg(failedMsg);
+        tServiceResult.setThrowable(throwable);
+        return tServiceResult;
+    }
+
+    public static <T> ServiceResult<T> failed(T result, String failedMsg) {
+        ServiceResult<T> tServiceResult = new ServiceResult<>(StatusConst.FAILED, result);
+        tServiceResult.setFailedMsg(failedMsg);
+        tServiceResult.setFailedCode(ServiceException.DEFAULT_FAILED_CODE);
+        return tServiceResult;
+    }
+
+    public static <T> ServiceResult<T> failed(T result, int failedCode, String failedMsg) {
+        ServiceResult<T> tServiceResult = new ServiceResult<>(StatusConst.FAILED, result);
+        tServiceResult.setFailedCode(failedCode);
+        tServiceResult.setFailedMsg(failedMsg);
+        return tServiceResult;
+    }
+
+    public static <T> ServiceResult<T> failed(T result, int failedCode, String failedMsg, Throwable throwable) {
+        ServiceResult<T> tServiceResult = new ServiceResult<>(StatusConst.FAILED, result);
+        tServiceResult.setFailedCode(failedCode);
+        tServiceResult.setFailedMsg(failedMsg);
+        tServiceResult.setThrowable(throwable);
         return tServiceResult;
     }
 

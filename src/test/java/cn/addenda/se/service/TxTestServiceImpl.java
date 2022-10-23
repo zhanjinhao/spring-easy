@@ -5,6 +5,7 @@ import cn.addenda.se.pojo.TxTest;
 import cn.addenda.se.mapper.TxTestMapper;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
+import cn.addenda.se.result.StatusConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class TxTestServiceImpl implements TxTestService {
     @Transactional(rollbackFor = Exception.class)
     public ServiceResult<Boolean> insert(TxTest txTest) {
         boolean success = txTestMapper.insert(txTest) > 0;
-        return new ServiceResult<>(ServiceResult.STATUS_SUCCESS, success);
+        return new ServiceResult<>(StatusConst.SUCCESS, success);
     }
 
 }

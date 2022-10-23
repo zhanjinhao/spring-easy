@@ -13,6 +13,7 @@ public @interface ServiceResultConvertible {
 
     String EXC_TO_SUCCESS = "excToSuccess";
     String EXC_TO_ERROR = "excToError";
+    String EXC_TO_DISPATCH = "excToDispatch";
 
     // 哪些异常能进行转换
     Class<? extends Throwable> excClass() default ServiceException.class;

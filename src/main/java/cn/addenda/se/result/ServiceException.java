@@ -1,45 +1,51 @@
 package cn.addenda.se.result;
 
 /**
+ * 业务异常和普通的异常相比，增加了 failedCode
+ *
  * @author addenda
  * @datetime 2022/10/8 17:28
  */
 public class ServiceException extends RuntimeException {
 
-    private String excMsg;
+    public static final int DEFAULT_FAILED_CODE = 0;
 
-    public ServiceException() {
-    }
+    private final int failedCode;
 
-    public ServiceException(String excMsg) {
-        this.excMsg = excMsg;
-    }
-
-    public ServiceException(String message, String excMsg) {
+    public ServiceException(String message) {
         super(message);
-        this.excMsg = excMsg;
+        this.failedCode = DEFAULT_FAILED_CODE;
     }
 
-    public ServiceException(String message, Throwable cause, String excMsg) {
+    public ServiceException(int failedCode) {
+        this.failedCode = failedCode;
+    }
+
+    public ServiceException(String message, int failedCode) {
+        super(message);
+        this.failedCode = failedCode;
+    }
+
+    public ServiceException(String message, Throwable cause, int failedCode) {
         super(message, cause);
-        this.excMsg = excMsg;
+        this.failedCode = failedCode;
     }
 
-    public ServiceException(Throwable cause, String excMsg) {
+    public ServiceException(Throwable cause, int failedCode) {
         super(cause);
-        this.excMsg = excMsg;
+        this.failedCode = failedCode;
     }
 
-    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String excMsg) {
+    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, int failedCode) {
         super(message, cause, enableSuppression, writableStackTrace);
-        this.excMsg = excMsg;
+        this.failedCode = failedCode;
     }
 
-    public String getExcMsg() {
-        return excMsg;
+    public int getFailedCode() {
+        return failedCode;
     }
 
-    public void setExcMsg(String excMsg) {
-        this.excMsg = excMsg;
+    public String printMessage() {
+        return "errorCode:" + failedCode + ",message:" + getMessage();
     }
 }
