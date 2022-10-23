@@ -20,11 +20,10 @@ public class TransactionHelperTest {
         SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE);
         TxTestMapper txTestMapper = sqlSession.getMapper(TxTestMapper.class);
-        TransactionUtils.doTransaction(Exception.class, () -> {
-            txTestMapper.insert(new TxTest("VoidTxExecutor", "123"));
-            txTestMapper.insert(new TxTest("VoidTxExecutor", "123"));
-            throw new Exception("exception for purpose !");
+        Integer integer = TransactionUtils.doTransaction(Exception.class, () -> {
+            return txTestMapper.insert(new TxTest("VoidTxExecutor", "123"));
         });
+        System.out.println(integer);
 
     }
 
