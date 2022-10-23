@@ -25,6 +25,12 @@ public class TransactionAttributeBuilder {
     private Class<? extends Throwable>[] noRollbackFor;
     private String[] noRollbackForClassName;
 
+    public static TransactionAttributeBuilder newRRBuilder() {
+        return new TransactionAttributeBuilder()
+                .rollbackFor(Exception.class)
+                .withIsolation(Isolation.REPEATABLE_READ);
+    }
+
     public static TransactionAttributeBuilder newBuilder() {
         return new TransactionAttributeBuilder();
     }
