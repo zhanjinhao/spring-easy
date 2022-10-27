@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 /**
  * 请求异常时：
- *
+ * <p>
  * 业务异常时：
  *
  * @Author ISJINHAO
@@ -13,7 +13,7 @@ import java.util.function.Function;
  */
 public class ControllerResult<T> implements Serializable {
 
-    private String requestId;
+    private String reqId;
     private String version;
 
     private long ts = System.currentTimeMillis();
@@ -22,24 +22,24 @@ public class ControllerResult<T> implements Serializable {
     /**
      * 请求状态
      */
-    private String requestStatus = StatusConst.FAILED;
+    private String reqStatus = StatusConst.FAILED;
     /**
      * 请求错误原因
      */
-    private String requestErrorMsg;
+    private String reqErrorMsg;
 
     /**
      * 业务状态
      */
-    private String businessStatus = StatusConst.FAILED;
+    private String bizStatus = StatusConst.FAILED;
     /**
      * 业务失败code
      */
-    private Integer businessFailedCode;
+    private Integer bizFailedCode;
     /**
      * 业务失败原因
      */
-    private String businessFailedMsg;
+    private String bizFailedMsg;
 
     public ControllerResult() {
     }
@@ -48,8 +48,8 @@ public class ControllerResult<T> implements Serializable {
      * 用于简便构建 请求成功&业务成功 时的结果对象
      */
     public ControllerResult(T result) {
-        this.requestStatus = StatusConst.SUCCESS;
-        this.businessStatus = StatusConst.SUCCESS;
+        this.reqStatus = StatusConst.SUCCESS;
+        this.bizStatus = StatusConst.SUCCESS;
         this.result = result;
     }
 
@@ -63,21 +63,21 @@ public class ControllerResult<T> implements Serializable {
         if (result != null) {
             controllerResult.setResult(function.apply(result));
         }
-        controllerResult.setRequestStatus(StatusConst.SUCCESS);
-        controllerResult.setBusinessStatus(serviceResult.getStatus());
-        if (StatusConst.FAILED.equals(controllerResult.getBusinessStatus())) {
-            controllerResult.setBusinessFailedCode(serviceResult.getFailedCode());
-            controllerResult.setBusinessFailedMsg(serviceResult.getFailedMsg());
+        controllerResult.setReqStatus(StatusConst.SUCCESS);
+        controllerResult.setBizStatus(serviceResult.getStatus());
+        if (StatusConst.FAILED.equals(controllerResult.getBizStatus())) {
+            controllerResult.setBizFailedCode(serviceResult.getFailedCode());
+            controllerResult.setBizFailedMsg(serviceResult.getFailedMsg());
         }
         return controllerResult;
     }
 
-    public String getRequestId() {
-        return requestId;
+    public String getReqId() {
+        return reqId;
     }
 
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
+    public void setReqId(String reqId) {
+        this.reqId = reqId;
     }
 
     public String getVersion() {
@@ -104,44 +104,44 @@ public class ControllerResult<T> implements Serializable {
         this.result = result;
     }
 
-    public String getRequestStatus() {
-        return requestStatus;
+    public String getReqStatus() {
+        return reqStatus;
     }
 
-    public void setRequestStatus(String requestStatus) {
-        this.requestStatus = requestStatus;
+    public void setReqStatus(String reqStatus) {
+        this.reqStatus = reqStatus;
     }
 
-    public String getRequestErrorMsg() {
-        return requestErrorMsg;
+    public String getReqErrorMsg() {
+        return reqErrorMsg;
     }
 
-    public void setRequestErrorMsg(String requestErrorMsg) {
-        this.requestErrorMsg = requestErrorMsg;
+    public void setReqErrorMsg(String reqErrorMsg) {
+        this.reqErrorMsg = reqErrorMsg;
     }
 
-    public String getBusinessStatus() {
-        return businessStatus;
+    public String getBizStatus() {
+        return bizStatus;
     }
 
-    public void setBusinessStatus(String businessStatus) {
-        this.businessStatus = businessStatus;
+    public void setBizStatus(String bizStatus) {
+        this.bizStatus = bizStatus;
     }
 
-    public Integer getBusinessFailedCode() {
-        return businessFailedCode;
+    public Integer getBizFailedCode() {
+        return bizFailedCode;
     }
 
-    public void setBusinessFailedCode(Integer businessFailedCode) {
-        this.businessFailedCode = businessFailedCode;
+    public void setBizFailedCode(Integer bizFailedCode) {
+        this.bizFailedCode = bizFailedCode;
     }
 
-    public String getBusinessFailedMsg() {
-        return businessFailedMsg;
+    public String getBizFailedMsg() {
+        return bizFailedMsg;
     }
 
-    public void setBusinessFailedMsg(String businessFailedMsg) {
-        this.businessFailedMsg = businessFailedMsg;
+    public void setBizFailedMsg(String bizFailedMsg) {
+        this.bizFailedMsg = bizFailedMsg;
     }
 
 }
