@@ -46,6 +46,6 @@ public class ServiceException extends RuntimeException {
     }
 
     public String printMessage() {
-        return "errorCode:" + failedCode + ",message:" + getMessage();
+        return "errorCode: " + failedCode + ", message: " + getMessage();
     }
 }
