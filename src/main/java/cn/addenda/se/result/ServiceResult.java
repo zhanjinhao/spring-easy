@@ -1,6 +1,6 @@
 package cn.addenda.se.result;
 
-import cn.addenda.businesseasy.util.BEDateUtil;
+import cn.addenda.businesseasy.util.BEDateUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -105,7 +105,7 @@ public class ServiceResult<T> implements Serializable {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     private String covertTmToStr(long tm) {
-        LocalDateTime localDateTime = BEDateUtil.timestampToLocalDateTime(tm);
+        LocalDateTime localDateTime = BEDateUtils.timestampToLocalDateTime(tm);
         return formatter.format(localDateTime);
     }
 
