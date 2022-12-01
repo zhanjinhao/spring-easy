@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author ISJINHAO
  * @date 2022/2/27
  */
-public class TransactionHelperTest {
+public class TransactionUtilsTest {
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context =
@@ -24,6 +24,10 @@ public class TransactionHelperTest {
             return txTestMapper.insert(new TxTest("VoidTxExecutor", "123"));
         });
         System.out.println(integer);
+
+        TransactionUtils.doTransaction(Exception.class, () -> {
+            txTestMapper.insert(new TxTest("VoidTxExecutor", "123"));
+        });
 
     }
 
