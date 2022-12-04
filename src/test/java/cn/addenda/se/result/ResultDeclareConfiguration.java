@@ -24,7 +24,7 @@ import java.sql.Driver;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableTransactionManagement(order = Ordered.LOWEST_PRECEDENCE)
-@EnableServiceResultConverter(order = Ordered.LOWEST_PRECEDENCE - 1)
+@EnableServiceResultConversion(order = Ordered.LOWEST_PRECEDENCE - 1)
 @PropertySource(value = {"classpath:db.properties"})
 public class ResultDeclareConfiguration implements EmbeddedValueResolverAware {
 

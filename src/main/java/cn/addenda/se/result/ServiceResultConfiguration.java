@@ -22,7 +22,7 @@ public class ServiceResultConfiguration implements ImportAware {
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.annotationAttributes = AnnotationAttributes.fromMap(
-                importMetadata.getAnnotationAttributes(EnableServiceResultConverter.class.getName(), false));
+                importMetadata.getAnnotationAttributes(EnableServiceResultConversion.class.getName(), false));
         if (this.annotationAttributes == null) {
             throw new IllegalArgumentException(
                     "@EnableServiceResultConverter is not present on importing class " + importMetadata.getClassName());

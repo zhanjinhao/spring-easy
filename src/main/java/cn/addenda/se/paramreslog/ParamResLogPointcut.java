@@ -13,10 +13,10 @@ public class ParamResLogPointcut extends StaticMethodMatcherPointcut {
 
     @Override
     public boolean matches(Method method, Class<?> targetClass) {
-        ParamResLog annotation = AnnotationUtils.findAnnotation(targetClass, ParamResLog.class);
+        ParamResLoggable annotation = AnnotationUtils.findAnnotation(targetClass, ParamResLoggable.class);
         if (annotation == null) {
             Method actualMethod = AopUtils.getMostSpecificMethod(method, targetClass);
-            annotation = AnnotationUtils.findAnnotation(actualMethod, ParamResLog.class);
+            annotation = AnnotationUtils.findAnnotation(actualMethod, ParamResLoggable.class);
         }
 
         return annotation != null;

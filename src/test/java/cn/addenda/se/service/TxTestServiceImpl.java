@@ -1,6 +1,6 @@
 package cn.addenda.se.service;
 
-import cn.addenda.se.paramreslog.ParamResLog;
+import cn.addenda.se.paramreslog.ParamResLoggable;
 import cn.addenda.se.pojo.TxTest;
 import cn.addenda.se.mapper.TxTestMapper;
 import cn.addenda.se.result.ServiceResult;
@@ -23,7 +23,7 @@ public class TxTestServiceImpl implements TxTestService {
     private String name;
 
     @Override
-    @ParamResLog
+    @ParamResLoggable
     @ServiceResultConvertible(excTo = ServiceResultConvertible.EXC_TO_SUCCESS, excClass = Exception.class)
     @Transactional(rollbackFor = Exception.class)
     public ServiceResult<Boolean> insert(TxTest txTest) {

@@ -48,9 +48,9 @@ public class ServiceResultMethodInterceptor implements MethodInterceptor {
             if (ServiceResultConvertible.EXC_TO_SUCCESS.equals(serviceResultConvertible.excTo())) {
                 result = ServiceResult.success(null);
             } else if (ServiceResultConvertible.EXC_TO_DISPATCH.equals(serviceResultConvertible.excTo())) {
-                result = ServiceResult.dispatch(null, se.getFailedCode(), se.getMessage(), se);
+                result = ServiceResult.dispatch(null, se.getFailedCode(), se.printMessage(), se);
             } else if (ServiceResultConvertible.EXC_TO_ERROR.equals(serviceResultConvertible.excTo())) {
-                result = ServiceResult.failed(null, se.getFailedCode(), se.getMessage(), se);
+                result = ServiceResult.failed(null, se.getFailedCode(), se.printMessage(), se);
             } else {
                 throw new ServiceResultException("only support EXC_TO_ERROR and EXC_TO_SUCCESS. ");
             }

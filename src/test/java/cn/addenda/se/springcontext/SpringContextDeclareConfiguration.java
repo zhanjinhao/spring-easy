@@ -1,6 +1,6 @@
 package cn.addenda.se.springcontext;
 
-import cn.addenda.se.result.EnableServiceResultConverter;
+import cn.addenda.se.result.EnableServiceResultConversion;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -25,7 +25,7 @@ import java.sql.Driver;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableTransactionManagement(order = Ordered.LOWEST_PRECEDENCE)
-@EnableServiceResultConverter(order = Ordered.LOWEST_PRECEDENCE - 1)
+@EnableServiceResultConversion(order = Ordered.LOWEST_PRECEDENCE - 1)
 @PropertySource(value = {"classpath:db.properties"})
 public class SpringContextDeclareConfiguration implements EmbeddedValueResolverAware {
 

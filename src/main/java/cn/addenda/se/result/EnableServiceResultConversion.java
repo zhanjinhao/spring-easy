@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(ServiceResultSelector.class)
-public @interface EnableServiceResultConverter {
+public @interface EnableServiceResultConversion {
 
     int order() default Ordered.LOWEST_PRECEDENCE;
 

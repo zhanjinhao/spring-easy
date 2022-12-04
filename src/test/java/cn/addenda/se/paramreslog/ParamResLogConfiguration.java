@@ -4,7 +4,7 @@ import cn.addenda.se.multidatasource.EnableMultiDataSource;
 import cn.addenda.se.multidatasource.MultiDataSource;
 import cn.addenda.se.multidatasource.MultiDataSourceConstant;
 import cn.addenda.se.multidatasource.MultiDataSourceEntry;
-import cn.addenda.se.result.EnableServiceResultConverter;
+import cn.addenda.se.result.EnableServiceResultConversion;
 import com.alibaba.druid.pool.DruidDataSource;
 import java.sql.Driver;
 import javax.sql.DataSource;
@@ -27,7 +27,7 @@ import org.springframework.util.StringValueResolver;
  */
 //@Configuration(proxyBeanMethods = false)
 @EnableTransactionManagement(order = Ordered.LOWEST_PRECEDENCE)
-@EnableServiceResultConverter(order = Ordered.LOWEST_PRECEDENCE - 1)
+@EnableServiceResultConversion(order = Ordered.LOWEST_PRECEDENCE - 1)
 @EnableMultiDataSource(order = Ordered.LOWEST_PRECEDENCE - 2)
 @EnableParamResLog(order = Ordered.LOWEST_PRECEDENCE - 4)
 //@EnableCaching(order = Ordered.LOWEST_PRECEDENCE - 3)

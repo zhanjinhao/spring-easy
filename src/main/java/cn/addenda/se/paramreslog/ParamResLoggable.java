@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Inherited
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ParamResLog {
+public @interface ParamResLoggable {
 
 }
