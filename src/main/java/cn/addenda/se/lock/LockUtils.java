@@ -65,14 +65,14 @@ public class LockUtils implements ApplicationListener<ContextRefreshedEvent>, Ap
      */
     public static <R> R doLock(int keyArgumentIndex, String prefix, LockHelper.LockExecutor<R> executor, Object... arguments) {
         Assert.notNull(lockHelper, SPRING_NOT_START_MSG);
-        LockAttribute attribute = LockAttribute.lockAttributeBuilder
+        LockAttribute attribute = LockAttribute.LockAttributeBuilder
                 .newBuilder().withPrefix(prefix).withKeyArgumentIndex(keyArgumentIndex).build();
         return doLock(attribute, executor, arguments);
     }
 
     public static void doLock(int keyArgumentIndex, String prefix, LockHelper.VoidLockExecutor voidExecutor, Object... arguments) {
         Assert.notNull(lockHelper, SPRING_NOT_START_MSG);
-        LockAttribute attribute = LockAttribute.lockAttributeBuilder
+        LockAttribute attribute = LockAttribute.LockAttributeBuilder
                 .newBuilder().withPrefix(prefix).withKeyArgumentIndex(keyArgumentIndex).build();
         doLock(attribute, voidExecutor, arguments);
     }

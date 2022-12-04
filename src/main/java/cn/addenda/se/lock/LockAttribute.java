@@ -50,7 +50,7 @@ public class LockAttribute {
         this.lockFailedMsg = lockFailedMsg;
     }
 
-    public static class lockAttributeBuilder {
+    public static class LockAttributeBuilder {
 
         private int keyArgumentIndex = 0;
 
@@ -60,26 +60,26 @@ public class LockAttribute {
 
         private String lockFailedMsg;
 
-        public static lockAttributeBuilder newBuilder() {
-            return new lockAttributeBuilder();
+        public static LockAttributeBuilder newBuilder() {
+            return new LockAttributeBuilder();
         }
 
-        public lockAttributeBuilder withKeyArgumentIndex(int keyArgumentIndex) {
+        public LockAttributeBuilder withKeyArgumentIndex(int keyArgumentIndex) {
             this.keyArgumentIndex = keyArgumentIndex;
             return this;
         }
 
-        public lockAttributeBuilder withPrefix(String prefix) {
+        public LockAttributeBuilder withPrefix(String prefix) {
             this.prefix = prefix;
             return this;
         }
 
-        public lockAttributeBuilder withKeyExtractor(String keyExtractor) {
+        public LockAttributeBuilder withKeyExtractor(String keyExtractor) {
             this.keyExtractor = keyExtractor;
             return this;
         }
 
-        public lockAttributeBuilder withLockFailedMsg(String lockFailedMsg) {
+        public LockAttributeBuilder withLockFailedMsg(String lockFailedMsg) {
             this.lockFailedMsg = lockFailedMsg;
             return this;
         }

@@ -25,7 +25,7 @@ public class LockMethodInterceptor extends LockAspectSupport implements MethodIn
             return invocation.proceed();
         }
 
-        LockAttribute attribute = LockAttribute.lockAttributeBuilder.newBuilder()
+        LockAttribute attribute = LockAttribute.LockAttributeBuilder.newBuilder()
                 .withKeyArgumentIndex(locked.keyArgumentIndex())
                 .withKeyExtractor(locked.keyExtractor())
                 .withLockFailedMsg(locked.lockFailedMsg())
