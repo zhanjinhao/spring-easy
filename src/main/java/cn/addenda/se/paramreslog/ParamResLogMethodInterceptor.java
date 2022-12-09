@@ -47,7 +47,7 @@ public class ParamResLogMethodInterceptor implements MethodInterceptor {
             if (arguments.length == 0) {
                 argumentsStr = "Method has no parameters.";
             } else {
-                argumentsStr = BEJsonUtils.objectToString(arguments);
+                argumentsStr = toJsonStr(arguments);
             }
             logger.info("{}-{}, parameter: {}", methodName, sequence, argumentsStr);
         }
@@ -56,7 +56,7 @@ public class ParamResLogMethodInterceptor implements MethodInterceptor {
 
         try {
             Object result = invocation.proceed();
-            String resultStr = BEJsonUtils.objectToString(result);
+            String resultStr = toJsonStr(result);
 
             if (paramResLoggable.logReturn()) {
                 logger.info("{}-{}, result: {}", methodName, sequence, resultStr);
@@ -64,7 +64,7 @@ public class ParamResLogMethodInterceptor implements MethodInterceptor {
             return result;
         } catch (Throwable throwable) {
             if (paramResLoggable.logReturn()) {
-                logger.info("{}-{}, error: {}", methodName, sequence, BEJsonUtils.objectToString(throwable));
+                logger.info("{}-{}, error: {}", methodName, sequence, toJsonStr(throwable));
             }
             throw throwable;
         } finally {
