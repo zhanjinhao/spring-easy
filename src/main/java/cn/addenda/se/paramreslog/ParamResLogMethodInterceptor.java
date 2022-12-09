@@ -1,16 +1,22 @@
 package cn.addenda.se.paramreslog;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+import cn.addenda.businesseasy.util.BEJsonUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.core.annotation.AnnotationUtils;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * @author addenda
@@ -20,35 +26,72 @@ public class ParamResLogMethodInterceptor implements MethodInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(ParamResLogMethodInterceptor.class);
 
-    private static final AtomicLong SEQUENCE_GENERATOR = new AtomicLong(0L);
+    private static final Map<String, AtomicLong> SEQUENCE_GENERATOR_MAP = new ConcurrentHashMap<>();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        Object[] arguments = invocation.getArguments();
-        String argumentsStr;
-        if (arguments.length == 0) {
-            argumentsStr = "Method has no parameters.";
-        } else {
-            argumentsStr = toStr(arguments);
+        Method method = AopUtils.getMostSpecificMethod(invocation.getMethod(), invocation.getThis().getClass());
+        ParamResLoggable paramResLoggable = AnnotationUtils.findAnnotation(method, ParamResLoggable.class);
+        if (paramResLoggable == null) {
+            return invocation.proceed();
         }
-        long sequence = SEQUENCE_GENERATOR.getAndDecrement();
-        logger.info("{}, parameter: {}", sequence, argumentsStr);
+
+        // e.g. ParamResLogMethodInterceptor.invoke、ParamResLogMethodInterceptor.hashCode
+        String methodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
+        long sequence = SEQUENCE_GENERATOR_MAP.computeIfAbsent(methodName, s -> new AtomicLong(0L)).getAndDecrement();
+
+        Object[] arguments = invocation.getArguments();
+
+        String argumentsStr;
+        if (paramResLoggable.logParam()) {
+            if (arguments.length == 0) {
+                argumentsStr = "Method has no parameters.";
+            } else {
+                argumentsStr = BEJsonUtils.objectToString(arguments);
+            }
+            logger.info("{}-{}, parameter: {}", methodName, sequence, argumentsStr);
+        }
+
+        long start = System.currentTimeMillis();
 
         try {
             Object result = invocation.proceed();
-            String resultStr = toStr(result);
-            logger.info("{}, result: {}", sequence, resultStr);
+            String resultStr = BEJsonUtils.objectToString(result);
+
+            if (paramResLoggable.logReturn()) {
+                logger.info("{}-{}, result: {}", methodName, sequence, resultStr);
+            }
             return result;
         } catch (Throwable throwable) {
-            logger.info("{}, error: {}", sequence, toStr(throwable));
+            if (paramResLoggable.logReturn()) {
+                logger.info("{}-{}, error: {}", methodName, sequence, BEJsonUtils.objectToString(throwable));
+            }
             throw throwable;
+        } finally {
+            if (paramResLoggable.logCost()) {
+                logger.info("{}-{}, cost: {}", methodName, sequence, System.currentTimeMillis() - start);
+            }
+        }
+    }
+
+    private String toJsonStr(Object o) {
+        if (o == null) {
+            return "NIL";
         }
 
+        if (o instanceof Throwable) {
+            Throwable throwable = (Throwable) o;
+            StringWriter sw = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(sw));
+            return sw.toString();
+        }
+
+        return BEJsonUtils.objectToString(o);
     }
 
     private String toStr(Object o) {
         if (o == null) {
-            return "null";
+            return "NIL";
         } else if (o instanceof Collection) {
             Collection<?> collection = (Collection<?>) o;
             return collection.stream().map(this::toStr).collect(Collectors.joining(",", "[", "]"));
