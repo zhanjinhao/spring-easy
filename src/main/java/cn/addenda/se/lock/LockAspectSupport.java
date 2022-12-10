@@ -50,7 +50,7 @@ public class LockAspectSupport implements BeanFactoryAware {
             StandardEvaluationContext context = new StandardEvaluationContext(keyArgument);
             key = parser.parseExpression(lockAttribute.getKeyExtractor()).getValue(context, String.class);
         }
-        if (key == null || key.length() == 1) {
+        if (key == null || key.length() == 0) {
             throw new SystemException("不能对 null 或 \"\" 加分布式锁。");
         }
 
@@ -62,7 +62,7 @@ public class LockAspectSupport implements BeanFactoryAware {
                 logger.info("分布式锁 [{}] 加锁成功。", lockedKey);
                 return supplier.get();
             } catch (Throwable e) {
-                throw new LockException("分布式锁 [{}] 枷锁期间，业务执行失败！", e);
+                throw new LockException("分布式锁 [" + lockedKey + "] 加锁期间，业务执行失败！", e);
             } finally {
                 boolean releaseSuccess = true;
                 try {
