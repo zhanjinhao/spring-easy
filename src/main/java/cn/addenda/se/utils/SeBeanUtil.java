@@ -52,15 +52,6 @@ public class SeBeanUtil {
         return false;
     }
 
-    public static void copyPropertiesIgnoreNull(Object src, Object target, String... ignoreProperties) {
-        Set<String> ignorePropertyNames = getNullPropertyNames(src);
-        if (ignoreProperties != null) {
-            ignorePropertyNames.addAll(Arrays.stream(ignoreProperties).collect(Collectors.toSet()));
-        }
-        String[] result = new String[ignorePropertyNames.size()];
-        BeanUtils.copyProperties(src, target, ignorePropertyNames.toArray(result));
-    }
-
     /**
      * @param list vital: 集合内部元素的属性必须具有无参构造方法。
      * @return 不会影响集合中的元素
@@ -87,6 +78,25 @@ public class SeBeanUtil {
 
     public static <T> T copyProperties(Object source, T target) {
         BeanUtils.copyProperties(source, target);
+        return target;
+    }
+
+    /**
+     * 给target对象里非ignoreProperties里存在的属性赋值
+     *
+     * @param src
+     * @param target
+     * @param ignoreProperties
+     * @param <T>
+     * @return
+     */
+    public static <T> T copyPropertiesIgnoreNull(Object src, T target, String... ignoreProperties) {
+        Set<String> ignorePropertyNames = getNullPropertyNames(src);
+        if (ignoreProperties != null) {
+            ignorePropertyNames.addAll(Arrays.stream(ignoreProperties).collect(Collectors.toSet()));
+        }
+        String[] result = new String[ignorePropertyNames.size()];
+        BeanUtils.copyProperties(src, target, ignorePropertyNames.toArray(result));
         return target;
     }
 
