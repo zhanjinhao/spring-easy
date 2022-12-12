@@ -1,5 +1,6 @@
 package cn.addenda.se.transaction;
 
+import cn.addenda.se.result.ServiceException;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 
@@ -24,6 +25,8 @@ public class TransactionHelper extends TransactionAspectSupport {
                     return executor.process();
                 }
             });
+        } catch (ServiceException e) {
+            throw e;
         } catch (Throwable e) {
             throw new TransactionException("事务在TransactionHelper内执行失败！", e);
         } finally {

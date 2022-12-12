@@ -61,6 +61,8 @@ public class LockAspectSupport implements BeanFactoryAware {
             try {
                 logger.info("分布式锁 [{}] 加锁成功。", lockedKey);
                 return supplier.get();
+            } catch (ServiceException e) {
+                throw e;
             } catch (Throwable e) {
                 throw new LockException("分布式锁 [" + lockedKey + "] 加锁期间，业务执行失败！", e);
             } finally {
