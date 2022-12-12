@@ -14,6 +14,8 @@ import org.springframework.util.Assert;
  */
 public class LockUtils implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
+    public static final String SYSTEM_BUSY = "系统繁忙，请稍后重试！";
+
     private String namespace;
     private LockService lockService;
 
@@ -58,6 +60,23 @@ public class LockUtils implements ApplicationListener<ContextRefreshedEvent>, Ap
     public static void doLock(int keyArgumentIndex, LockHelper.VoidLockExecutor voidExecutor, Object... arguments) {
         Assert.notNull(lockHelper, SPRING_NOT_START_MSG);
         doLock(keyArgumentIndex, LockAttribute.DEFAULT_PREFIX, voidExecutor, arguments);
+    }
+
+    /**
+     * 较上一个场景，arguments[0] 是 key，lockFailedMsg可以指定
+     */
+    public static <R> R doLock(String lockFailedMsg, String prefix, LockHelper.LockExecutor<R> executor, Object... arguments) {
+        Assert.notNull(lockHelper, SPRING_NOT_START_MSG);
+        LockAttribute attribute = LockAttribute.LockAttributeBuilder
+                .newBuilder().withPrefix(prefix).withLockFailedMsg(lockFailedMsg).build();
+        return doLock(attribute, executor, arguments);
+    }
+
+    public static void doLock(String lockFailedMsg, String prefix, LockHelper.VoidLockExecutor voidExecutor, Object... arguments) {
+        Assert.notNull(lockHelper, SPRING_NOT_START_MSG);
+        LockAttribute attribute = LockAttribute.LockAttributeBuilder
+                .newBuilder().withPrefix(prefix).withLockFailedMsg(lockFailedMsg).build();
+        doLock(attribute, voidExecutor, arguments);
     }
 
     /**
