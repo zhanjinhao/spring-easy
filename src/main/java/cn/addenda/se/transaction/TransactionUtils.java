@@ -11,6 +11,10 @@ import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.util.Assert;
 
+/**
+ * @author addenda
+ * @date 2022/4/8
+ */
 public class TransactionUtils implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
     private String transactionManagerBeanName;

@@ -3,7 +3,7 @@ package cn.addenda.se.transaction;
 import cn.addenda.se.SpringEasyException;
 
 /**
- * @author ISJINHAO
+ * @author addenda
  * @date 2022/4/8
  */
 public class TransactionException extends SpringEasyException {
