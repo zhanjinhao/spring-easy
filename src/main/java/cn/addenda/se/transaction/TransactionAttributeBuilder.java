@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 /**
  * 兼容 @Transactional 全部属性
+ *
+ * @author addenda
+ * @date 2022/4/8
  */
 public class TransactionAttributeBuilder {
 
