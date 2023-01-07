@@ -15,13 +15,24 @@
             ignore-resource-not-found="true"
             location="classpath*:/db.properties"/>
 
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+    <!--    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">-->
+    <!--        <property name="driverClassName" value="${db.driver}"/>-->
+    <!--        <property name="url" value="${db.url}"/>-->
+    <!--        <property name="username" value="${db.username}"/>-->
+    <!--        <property name="password" value="${db.password}"/>-->
+    <!--        &lt;!&ndash;        Spring接管事务之后，即使配置为true，也会被修改为false&ndash;&gt;-->
+    <!--        <property name="defaultAutoCommit" value="false"/>-->
+    <!--        &lt;!&ndash;        <property name="testOnBorrow" value="true"/>&ndash;&gt;-->
+    <!--    </bean>-->
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
         <property name="driverClassName" value="${db.driver}"/>
-        <property name="url" value="${db.url}"/>
+        <property name="jdbcUrl" value="${db.url}"/>
         <property name="username" value="${db.username}"/>
         <property name="password" value="${db.password}"/>
-        <!--        Spring接管事务之后，即使配置为true，也会被修改为false-->
-        <property name="defaultAutoCommit" value="false"/>
+        <property name="autoCommit" value="false"/>
+        <property name="minimumIdle" value="1"/>
+        <property name="maximumPoolSize" value="1"/>
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -38,5 +49,11 @@
 
     <bean class="cn.addenda.se.transaction.TransactionHelper"/>
     <bean class="cn.addenda.se.transaction.TransactionUtils"/>
+
+
+    <bean class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="isolationLevel" value="2"/>
+        <property name="transactionManager" ref="dataSourceTransactionManager"/>
+    </bean>
 
 </beans>
