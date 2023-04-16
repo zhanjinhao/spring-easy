@@ -20,6 +20,11 @@
         <druid.version>1.2.8</druid.version>
         <mybatis.version>3.5.9</mybatis.version>
         <mybatis-spring.version>2.0.7</mybatis-spring.version>
+        <junit.version>4.13.2</junit.version>
+        <mysql-connector.version>8.0.25</mysql-connector.version>
+        <hakariCp.version>4.0.3</hakariCp.version>
+
+        <lombok.version>1.18.22</lombok.version>
     </properties>
 
     <dependencies>
@@ -48,6 +53,8 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
+        <!--测试期依赖-->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -63,7 +70,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.25</version>
+            <version>${mysql-connector.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -75,7 +82,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>4.0.3</version>
+            <version>${hakariCp.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -83,6 +90,20 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

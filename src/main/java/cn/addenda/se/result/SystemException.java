@@ -1,7 +1,7 @@
 package cn.addenda.se.result;
 
 /**
- * 对受查异常进行保证用。
+ * 对受查异常进行包装用。
  *
  * @author addenda
  * @datetime 2022/10/26 19:38
