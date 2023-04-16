@@ -1,5 +1,6 @@
 package cn.addenda.se.argreslog;
 
+import cn.addenda.se.result.SystemException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -61,7 +62,7 @@ public class ArgResLogAttr {
                 this.exceptionLevel = exceptionLevel;
                 return this;
             }
-            throw new ArgResLogException("unexpected exception");
+            throw new SystemException("异常时的日志级别只能是：ERROR、WARN、INFO，当前是：" + exceptionLevel + "。");
         }
 
         public ArgResLogAttr build() {
