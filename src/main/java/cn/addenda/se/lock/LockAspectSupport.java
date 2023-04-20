@@ -1,7 +1,9 @@
 package cn.addenda.se.lock;
 
 import cn.addenda.businesseasy.lock.LockService;
+import cn.addenda.businesseasy.util.ExceptionUtil;
 import cn.addenda.se.result.ServiceException;
+import java.lang.reflect.UndeclaredThrowableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -25,7 +27,7 @@ public class LockAspectSupport implements BeanFactoryAware {
 
     private final ExpressionParser parser = new SpelExpressionParser();
 
-    public Object invokeWithinLock(LockAttribute lockAttribute, Object[] arguments, TSupplier<Object> supplier) {
+    public Object invokeWithinLock(LockAttribute lockAttribute, Object[] arguments, TSupplier<Object> supplier) throws Throwable {
 
         int parameterIndex = lockAttribute.getKeyArgumentIndex();
         if (parameterIndex >= arguments.length) {
@@ -60,7 +62,7 @@ public class LockAspectSupport implements BeanFactoryAware {
                 return supplier.get();
             } catch (Throwable e) {
                 log.error("分布式锁 [" + lockedKey + "] 加锁期间，业务执行失败！");
-                throw warp(e);
+                throw e;
             } finally {
                 boolean releaseSuccess = true;
                 try {
@@ -94,55 +96,17 @@ public class LockAspectSupport implements BeanFactoryAware {
         T get() throws Throwable;
     }
 
-
-    protected static LockException warp(Throwable throwable) {
-        return new LockException(throwable);
-    }
-
-    protected static Throwable unWarp(LockException lockException) {
-        Throwable throwable = lockException;
-        while (throwable instanceof LockException) {
-            Throwable tmp = throwable.getCause();
-            if (tmp != null) {
-                throwable = tmp;
-            } else {
-                break;
-            }
-        }
-        return throwable;
-    }
-
-    /**
-     * invoke在三种情况下会发生异常：<p/>
-     * 第一种情况：Lock的使用不正确，此时捕获到的是SystemException，这类异常直接扔出去。此时不走catch块。<br/>
-     * 第二种情况：executor内部的异常，此时原始异常会被包装成LockException。
-     * <li>当原始异常为RuntimeException时，将原始异常抛出。目的是处理业务异常，使业务流程走ExceptionHandler。</li>
-     * <li>当原始异常不是RuntimeException时，直接抛出。因为受查异常需要方法声明异常，而我们的方法没有声明。</li>
-     * <br/>
-     * 第三种情况：Lock功能本身出现的异常，这类异常直接扔出去。理论上不会发生。此时不走catch块。<br/>
-     */
     protected static void reportAsRuntimeException(Throwable throwable) {
+        throwable = ExceptionUtil.unwrapThrowable(throwable);
         if (!(throwable instanceof LockException)) {
             if (throwable instanceof RuntimeException) {
                 throw (RuntimeException) throwable;
             } else {
-                throw new LockException(throwable);
+                throw new UndeclaredThrowableException(throwable);
             }
         }
-        LockException lockException = (LockException) throwable;
-        Throwable actualThrowable = unWarp(lockException);
-        if (actualThrowable instanceof RuntimeException) {
-            throw (RuntimeException) actualThrowable;
-        }
-        throw lockException;
-    }
 
-    protected static void reportAsThrowable(Throwable throwable) throws Throwable {
-        if (!(throwable instanceof LockException)) {
-            throw throwable;
-        }
-        LockException lockException = (LockException) throwable;
-        throw unWarp(lockException);
+        throw (LockException) throwable;
     }
 
 }

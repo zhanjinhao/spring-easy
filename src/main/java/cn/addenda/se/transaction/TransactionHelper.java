@@ -1,6 +1,7 @@
 package cn.addenda.se.transaction;
 
-import cn.addenda.se.result.ServiceException;
+import cn.addenda.businesseasy.util.ExceptionUtil;
+import java.lang.reflect.UndeclaredThrowableException;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 
@@ -29,10 +30,12 @@ public class TransactionHelper extends TransactionAspectSupport {
                     return executor.process();
                 }
             });
-        } catch (ServiceException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new TransactionException("事务在TransactionHelper内执行失败！", e);
+        } catch (Throwable throwable) {
+            Throwable unwrapThrowable = ExceptionUtil.unwrapThrowable(throwable);
+            if (!(unwrapThrowable instanceof RuntimeException)) {
+                throw new UndeclaredThrowableException(unwrapThrowable);
+            }
+            throw (RuntimeException) unwrapThrowable;
         } finally {
             TransactionHelperAttributeSource.clear();
         }
@@ -49,10 +52,12 @@ public class TransactionHelper extends TransactionAspectSupport {
     }
 
     public interface TransactionExecutor<R> {
+
         R process() throws Throwable;
     }
 
     public interface VoidTransactionExecutor {
+
         void process() throws Throwable;
     }
 

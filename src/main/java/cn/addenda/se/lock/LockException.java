@@ -6,6 +6,10 @@ package cn.addenda.se.lock;
  */
 public class LockException extends RuntimeException {
 
+    public LockException(Throwable cause) {
+        super(cause);
+    }
+
     public LockException(String message) {
         super(message);
     }

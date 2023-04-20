@@ -1,5 +1,6 @@
 package cn.addenda.se.lock;
 
+import cn.addenda.businesseasy.util.ExceptionUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
@@ -26,13 +27,17 @@ public class LockMethodInterceptor extends LockAspectSupport implements MethodIn
         }
 
         LockAttribute attribute = LockAttribute.LockAttributeBuilder.newBuilder()
-                .withKeyArgumentIndex(locked.keyArgumentIndex())
-                .withKeyExtractor(locked.keyExtractor())
-                .withLockFailedMsg(locked.lockFailedMsg())
-                .withPrefix(locked.prefix())
-                .build();
+            .withKeyArgumentIndex(locked.keyArgumentIndex())
+            .withKeyExtractor(locked.keyExtractor())
+            .withLockFailedMsg(locked.lockFailedMsg())
+            .withPrefix(locked.prefix())
+            .build();
 
-        return invokeWithinLock(attribute, invocation.getArguments(), invocation::proceed);
+        try {
+            return invokeWithinLock(attribute, invocation.getArguments(), invocation::proceed);
+        } catch (Throwable throwable) {
+            throw ExceptionUtil.unwrapThrowable(throwable);
+        }
     }
 
 }
