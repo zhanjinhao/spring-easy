@@ -35,8 +35,8 @@ public class ArgResLogUtils extends ArgResLogSupport {
     public static <R> R doLog(String callerInfo, ArgResLogAttr attr, ArgResLogExecutor<R> executor, Object... arguments) {
         try {
             return invoke(attr, arguments, executor::process, callerInfo);
-        } catch (ArgResLogException argResLogException) {
-            report(argResLogException);
+        } catch (Throwable throwable) {
+            reportAsRuntimeException(throwable);
             throw SystemException.unExpectedException();
         }
     }

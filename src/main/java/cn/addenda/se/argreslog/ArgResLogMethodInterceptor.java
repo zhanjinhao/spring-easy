@@ -1,7 +1,7 @@
 package cn.addenda.se.argreslog;
 
+import cn.addenda.businesseasy.util.ExceptionUtil;
 import cn.addenda.se.argreslog.ArgResLogAttr.ArgResLogAttrBuilder;
-import cn.addenda.se.result.SystemException;
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -37,11 +37,9 @@ public class ArgResLogMethodInterceptor extends ArgResLogSupport implements Meth
 
         try {
             return invoke(attr, invocation.getArguments(), invocation::proceed, callerInfo);
-        } catch (ArgResLogException argResLogException) {
-            report(argResLogException);
-            throw SystemException.unExpectedException();
+        } catch (Throwable throwable) {
+            throw ExceptionUtil.unwrapThrowable(throwable);
         }
-
     }
 
 }

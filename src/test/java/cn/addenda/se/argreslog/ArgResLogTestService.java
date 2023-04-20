@@ -7,37 +7,38 @@ import java.sql.SQLException;
  * @author addenda
  * @datetime 2023/3/9 16:19
  */
-public class ArgResLogTestService {
-
+public class ArgResLogTestService implements IArgResLogTestService {
+    @Override
     @ArgResLog
-    protected String completeNormally(String param) {
+    public String completeNormally(String param) {
         return param + " hengha";
     }
 
+    @Override
     @ArgResLog
-    protected String completeBusinessExceptionally(String param) {
+    public String completeBusinessExceptionally(String param) {
         throw new ServiceException(param + " hengha");
     }
-
+    @Override
     @ArgResLog
-    protected String completeCheckedExceptionally(String param) throws SQLException {
+    public String completeCheckedExceptionally(String param) throws SQLException {
         throw new SQLException(param + " hengha");
     }
-
+    @Override
     @ArgResLog
-    protected String completeNormally2(String param) {
+    public String completeNormally2(String param) {
         return ArgResLogUtils.doLog(() -> param + " hengha", param);
     }
-
+    @Override
     @ArgResLog
-    protected String completeBusinessExceptionally2(String param) {
+    public String completeBusinessExceptionally2(String param) {
         return ArgResLogUtils.doLog(() -> {
             throw new ServiceException(param + " hengha");
         }, param);
     }
-
+    @Override
     @ArgResLog
-    protected String completeCheckedExceptionally2(String param) throws SQLException {
+    public String completeCheckedExceptionally2(String param) throws SQLException {
         return ArgResLogUtils.doLog(() -> {
             throw new SQLException(param + " hengha");
         }, param);

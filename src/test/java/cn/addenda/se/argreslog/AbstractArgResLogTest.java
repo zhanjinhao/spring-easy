@@ -12,7 +12,7 @@ public class AbstractArgResLogTest {
         try {
             return supplier.get();
         } catch (Throwable throwable) {
-//            throwable.printStackTrace();
+            throwable.printStackTrace();
         }
         return null;
     }

@@ -2,6 +2,7 @@ package cn.addenda.se.argreslog;
 
 import java.sql.SQLException;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.core.DebuggingClassWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class ArgResLogInterceptorTest extends AbstractArgResLogTest {
 
     AnnotationConfigApplicationContext context;
 
-    ArgResLogTestService argResLogTestService;
+    IArgResLogTestService argResLogTestService;
 
     @Before
     public void before() {
@@ -25,7 +26,7 @@ public class ArgResLogInterceptorTest extends AbstractArgResLogTest {
         context.register(ArgResLogTestService.class);
         context.refresh();
 
-        argResLogTestService = context.getBean(ArgResLogTestService.class);
+        argResLogTestService = context.getBean(IArgResLogTestService.class);
     }
 
     @After
@@ -35,6 +36,8 @@ public class ArgResLogInterceptorTest extends AbstractArgResLogTest {
 
     @Test
     public void testOnlyAop() {
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "D:\\workspace\\2022");
+
         Object o1 = eatThrowable(() -> argResLogTestService.completeNormally("AA"));
         log.info("\n-----------------------------------------------------------------------------------------\n");
         Object o2 = eatThrowable(() -> argResLogTestService.completeBusinessExceptionally("AA"));
@@ -43,6 +46,7 @@ public class ArgResLogInterceptorTest extends AbstractArgResLogTest {
             try {
                 return argResLogTestService.completeCheckedExceptionally("AA");
             } catch (SQLException e) {
+                e.printStackTrace();
                 return null;
             }
         });
