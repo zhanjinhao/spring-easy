@@ -6,6 +6,9 @@ import org.springframework.core.Ordered;
 import java.lang.annotation.*;
 
 /**
+ * EnableLockManagement和EnableTransactionManagement一起使用时，
+ * 需要保证事务在锁内执行
+ *
  * @author addenda
  * @datetime 2022/9/29 13:55
  */
